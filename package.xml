@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>webcam_lidar</name>
+  <version>0.5.1</version>
+  <description>WebCam LiDAR package</description>
+  <maintainer email="marton@neorobot.hu">Marton Yuhaas</maintainer>
+  <license>BSD-3 (code) and CC-BY-4.0 (XACRO, URDF, images, and STL models)</license>
+  <url type="website">http://neorobot.hu</url>
+  <author email="marton@neorobot.hu">Marton Yuhaas</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>urdf</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+
+  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>nav_msgs</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>tf</build_export_depend>
+  <build_export_depend>visualization_msgs</build_export_depend>
+  <build_export_depend>cv_bridge</build_export_depend>
+  <build_export_depend>image_transport</build_export_depend>
+  <build_export_depend>dynamic_reconfigure</build_export_depend>
+
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
+
+</package>
