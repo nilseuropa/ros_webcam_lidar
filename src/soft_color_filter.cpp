@@ -97,9 +97,12 @@ int main(int argc, char **argv)
   f = boost::bind(&reconfigureCallBack, _1, _2);
   server.setCallback(f);
 
+  std::string camera_topic;
+  nhLocal.param("camera_topic", camera_topic, std::string("/head_camera/image_raw"));
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber sub = it.subscribe("/head_camera/image_raw", 1, imageCallback);
-  pub = it.advertise("/head_camera/image_color_filtered", 1);
+  image_transport::Subscriber sub = it.subscribe(camera_topic, 1, imageCallback);
+
+  pub = it.advertise("/webcam_lidar/image_filtered", 1);
 
   ROS_INFO_STREAM("Using OpenCV" << CV_MAJOR_VERSION);
 

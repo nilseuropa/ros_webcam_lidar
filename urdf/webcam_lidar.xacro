@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<robot name="webcam_lidar" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="base_link">
+  </link>
+
+  <link name="lidar_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+        <mass value="0.1"/>
+        <inertia ixx="0.0025440000000000003" ixy="0" ixz="0" iyy="0.002892" iyz="0" izz="0.0050520000000000001"/>
+    </inertial>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1"/>
+  </joint>
+
+  <!-- camera -->
+
+  <link name="head_camera">
+    <visual>
+        <origin rpy="0 ${pi/2} 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.01" radius="0.02"/>
+        </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0 ${pi/2} 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.02"/>
+      </geometry>
+        <mass value="1"/>
+        <inertia ixx="0.19833333333333333" ixy="0" ixz="0" iyy="0.24266666666666664" iyz="0" izz="0.42233333333333328"/>
+    </inertial>
+  </link>
+  <joint name="head_camera_joint" type="fixed">
+    <parent link="lidar_link"/>
+    <child link="head_camera"/>
+    <origin rpy="0 0.15 0" xyz="0 0 0.3"/>
+  </joint>
+
+  <gazebo reference="head_camera">
+    <sensor type="camera" name="head_camera">
+      <update_rate>30.0</update_rate>
+      <camera name="head_camera">
+        <horizontal_fov>1.3</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.01</near>
+          <far>10.0</far>
+        </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>30.0</updateRate>
+        <cameraName>head_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>head_camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- laser line projector -->
+
+  <link name="laser_frame">
+    <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.01" radius="0.01"/>
+        </geometry>
+    </visual>
+  </link>
+  <joint name="projector_joint" type="fixed">
+    <parent link="lidar_link"/>
+    <child link="laser_frame"/>
+    <origin rpy="0 ${-pi/2} 0" xyz="0 0 0.1"/>
+  </joint>
+
+  <gazebo reference="laser_frame">
+    <projector name="texture_projector">
+      <pose>0 0 0 0 0 0</pose>
+      <texture>laser_line.png</texture>
+      <fov>2.0</fov>
+      <near_clip>0.01</near_clip>
+      <far_clip>10</far_clip>
+    </projector>
+  </gazebo>
+
+
+  <!-- reference -->
+
+  <joint name="hokuyo_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="hokuyo_link"/>
+  </joint>
+
+  <link name="hokuyo_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <!-- hokuyo -->
+  <gazebo reference="hokuyo_link">
+    <sensor type="gpu_ray" name="head_hokuyo_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.570796</min_angle>
+            <max_angle>1.570796</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/reference/scan</topicName>
+        <frameName>hokuyo_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

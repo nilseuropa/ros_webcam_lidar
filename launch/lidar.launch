@@ -13,10 +13,21 @@
 
   <node pkg="webcam_lidar" type="soft_color_filter" name="color_filter_node">
     <rosparam file="$(find webcam_lidar)/params/color_filter.yaml"/>
+    <param name="camera_topic" value="/head_camera/image_raw"/>
     <param name="headless" value="false"/>
     <param name="strobed_mode" value="false"/>
   </node>
 
-  <!--node pkg="tf" type="static_transform_publisher" name="tf_static" args="0 0 0 0 0 0 base_link lidar_link 100"/-->
+  <node pkg="webcam_lidar" type="webcam_lidar" name="triangulation_node">
+    <param name="use_tf" value="true"/>
+    <param name="camera_topic" value="/webcam_lidar/image_filtered"/>
+    <param name="webcam_lidar_frame" value="lidar_link"/>
+    <param name="camera_frame" value="head_camera"/>
+    <param name="laser_frame" value="laser_frame"/>
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="tf_static" args="0 0 0 0 0 0 base_link lidar_link 100"/>
+
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find webcam_lidar)/rviz/webcam_lidar.rviz" />
 
 </launch>

@@ -4,16 +4,13 @@ project(webcam_lidar)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-  urdf
-  geometry_msgs
-  nav_msgs
   roscpp
   std_msgs
-  dynamic_reconfigure
   genmsg
+  dynamic_reconfigure
   message_generation
-  visualization_msgs
   image_transport
+  sensor_msgs
   cv_bridge
   tf
 )
@@ -22,7 +19,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenCV)
 
 generate_dynamic_reconfigure_options(
-  #cfg/webcam_lidar.cfg
+  cfg/webcam_lidar.cfg
   cfg/color_filter.cfg
 )
 
@@ -43,11 +40,12 @@ add_executable(soft_color_filter src/soft_color_filter.cpp)
 add_dependencies(soft_color_filter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(soft_color_filter ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-#add_executable(triangulation_node src/triangulation_node.cpp)
-#target_link_libraries(triangulation_node
-#  ${catkin_LIBRARIES}
-#  ${OpenCV_LIBRARIES}
-#)
+add_executable(webcam_lidar src/triangulation_node.cpp)
+add_dependencies(webcam_lidar ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(webcam_lidar
+ ${catkin_LIBRARIES}
+ ${OpenCV_LIBRARIES}
+)
 
 
 #############
