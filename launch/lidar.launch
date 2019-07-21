@@ -13,17 +13,18 @@
 
   <node pkg="webcam_lidar" type="soft_color_filter" name="color_filter_node">
     <rosparam file="$(find webcam_lidar)/params/color_filter.yaml"/>
-    <param name="camera_topic" value="/head_camera/image_raw"/>
-    <param name="headless" value="false"/>
-    <param name="strobed_mode" value="false"/>
+    <param name="camera_topic" value="/head_camera/image_raw"/> <!-- raw camera image -->
+    <param name="headless" value="false"/> <!-- display raw feed and color filtered video windows -->
+    <param name="strobed_mode" value="false"/> <!-- use only if every second frame is illuminated -->
   </node>
 
   <node pkg="webcam_lidar" type="webcam_lidar" name="triangulation_node">
-    <param name="use_tf" value="true"/>
-    <param name="camera_topic" value="/webcam_lidar/image_filtered"/>
-    <param name="webcam_lidar_frame" value="lidar_link"/>
-    <param name="camera_frame" value="head_camera"/>
-    <param name="laser_frame" value="laser_frame"/>
+    <rosparam file="$(find webcam_lidar)/params/lidar_intrinsic.yaml"/>
+    <param name="use_tf" value="true"/> <!-- get camera to laser transformation from tf -->
+    <param name="camera_topic" value="/webcam_lidar/image_filtered"/> <!-- color filtered image topic -->
+    <param name="webcam_lidar_frame" value="lidar_link"/> <!-- pointcloud projection frame -->
+    <param name="camera_frame" value="head_camera"/> <!-- used for camera to laser transformation if use_tf is set true -->
+    <param name="laser_frame" value="laser_frame"/> <!-- used for camera to laser transformation if use_tf is set true -->
   </node>
 
   <node pkg="tf" type="static_transform_publisher" name="tf_static" args="0 0 0 0 0 0 base_link lidar_link 100"/>

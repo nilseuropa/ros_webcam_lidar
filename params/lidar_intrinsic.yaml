@@ -1,0 +1,6 @@
+cam_laser_distance: 0.2 # meters
+cam_laser_angle: 1.42 # radians
+cam_focal_length: 0.0001 # meters
+ccd_vertical_measure: 0.000119 # physical size of the CCD in meters
+ccd_horizontal_measure: 0.00015 # meters
+pixel_threshold: 0 # luminosity threshold for postfiltering

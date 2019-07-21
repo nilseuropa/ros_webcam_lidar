@@ -45,18 +45,18 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     for (int img_pt_y=0; img_pt_y < cv_ptr->image.rows; img_pt_y++)
     {
       Vec3b pixel = cv_ptr->image.at<Vec3b>(Point(img_pt_x/3,img_pt_y)); // single channel
-       if (pixel[0] > param.pixel_threshold && pixel[1] > param.pixel_threshold && pixel[2] > param.pixel_threshold)
+       if (pixel[0] > param.pixel_threshold && pixel[1] > param.pixel_threshold && pixel[2] > param.pixel_threshold) // cut off by pixel luminosity
        {
         // triangulation
         double pt_h    = -(img_pt_y-cv_ptr->image.rows/2)*(param.ccd_vertical_measure/cv_ptr->image.rows); // projected point height on CCD in meters
         double pt_x    = -(img_pt_x-cv_ptr->image.cols/2)*(param.ccd_horizontal_measure/cv_ptr->image.cols); // projected point horizontal translation in meters
-        double com_div = param.cam_focal_length * (1.0/tan(param.cam_laser_angle)) - pt_h;
-        // distance
+        double com_div = param.cam_focal_length * (1.0/tan(param.cam_laser_angle)) - pt_h; // common divisor
+        // point distance from frame
         cloud.points[img_pt_x].x = (param.cam_laser_distance * param.cam_focal_length) / com_div;
-        // horizontal
+        // point horizontal translation relative to frame
         cloud.points[img_pt_x].y = (param.cam_laser_distance * pt_x) / com_div;
-        // vertical
-        cloud.points[img_pt_x].z = 0.0; // at webcam_lidar_frame
+        // point height at webcam_lidar_frame
+        cloud.points[img_pt_x].z = 0.0;
       }
     }
   }

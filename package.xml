@@ -4,7 +4,7 @@
   <version>0.5.1</version>
   <description>WebCam LiDAR package</description>
   <maintainer email="marton@neorobot.hu">Marton Yuhaas</maintainer>
-  <license>BSD-3 (code) and CC-BY-4.0 (XACRO, URDF, images, and STL models)</license>
+  <license>UNLICENSE</license>
   <url type="website">http://neorobot.hu</url>
   <author email="marton@neorobot.hu">Marton Yuhaas</author>
 
